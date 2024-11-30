@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 
 def get_con():
-    """ Create a database connection to the MySQL database """
+    #Create a database connection to the MySQL database
     try:
         connection = mysql.connector.connect(
             host='localhost',
@@ -16,7 +16,7 @@ def get_con():
         print(f"Error: {e}")
         return None
     
-# Example usage
+
 if __name__ == "__main__":
     connection = get_con()
     if connection:
