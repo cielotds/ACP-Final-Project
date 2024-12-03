@@ -8,7 +8,6 @@ import textwrap
 
 
 class Product:
-    """A class to represent a product."""
     def __init__(self, name, price, image_path=None):
         self.name = name
         self.price = price
@@ -53,9 +52,9 @@ class Dashboard(tk.Tk):
         self.show_products("Rice Bowl")
 
         
-
+# GUI layout
     def create_layout(self):
-        """Set up the GUI layout."""
+       
         # Navigation Menu
         self.nav_frame = tk.Frame(self, bg="white", padx=10, pady=10)
         self.nav_frame.grid(row=0, column=0, sticky="ns")
@@ -76,21 +75,24 @@ class Dashboard(tk.Tk):
 
         
     
-
+# Navigation menu for categories
     def create_nav_menu(self):
-        """Create navigation menu for categories."""
+        
         tk.Label(self.nav_frame, text="DASHBOARD", font=("Calistoga", 20), bg="white", fg="#E1522B").pack(pady=10)
         for category in self.products.keys():
             tk.Button(self.nav_frame, text=category, bg="#5A954F", fg="white", font=("Calistoga", 12),
                       command=lambda c=category: self.show_products(c)).pack(pady=5, fill="x")
 
+    # Function to display products for the selected category 
     def show_products(self, category):
-        """Display products for the selected category in two columns."""
+        
         self.selected_category = category
         for widget in self.product_frame.winfo_children():
             widget.destroy()  # Clear previous products
 
         row, col = 0, 0
+
+        # Displays the products in two columns
         for product in self.products[category]:
             frame = self.create_product_widget(product)
             frame.grid(row=row, column=col, padx=10, pady=10, sticky="ew")
@@ -103,7 +105,7 @@ class Dashboard(tk.Tk):
         self.product_frame.grid_columnconfigure(1, weight=1)
 
 
-    # In the create_product_widget method
+    # Function to create a product widget for the products
     def create_product_widget(self, product):
         """Display individual product details."""
         frame = tk.Frame(self.product_frame, bg="white", highlightbackground="#5A954F", highlightthickness=2, width=200, height=250)  # Fixed size
@@ -133,7 +135,7 @@ class Dashboard(tk.Tk):
         return frame
 
 
-# In the create_order_summary method
+# Function to create an order summary 
     def create_order_summary(self):
         """Create order summary display with receipt placed beside it."""
     # Order summary treeview
@@ -173,12 +175,11 @@ class Dashboard(tk.Tk):
 
 
     def open_history(self):
-        """Function to open the history window or file."""
         import os
         os.system("python History.py")
-
+        
+# Load an image using PhotoImage
     def get_image(self, path):
-        """Load an image using PhotoImage."""
         if path not in self.image_cache:
             try:
                 self.image_cache[path] = tk.PhotoImage(file=path)
@@ -188,12 +189,10 @@ class Dashboard(tk.Tk):
         return self.image_cache.get(path)
 
     def calculate_total(self):
-        """Automatically calculate and update the total price in real-time."""
         total = sum(float(self.tree.item(child, "values")[2]) for child in self.tree.get_children())
         self.total_label.config(text=f"Total: P {total:.2f}")
 
     def remove_order(self):
-        """Remove selected item from the order."""
         selected_item = self.tree.selection()
         if selected_item:
             self.tree.delete(selected_item[0])  # Remove the selected item
@@ -279,7 +278,6 @@ class Dashboard(tk.Tk):
             return None
 
     def complete_order(self):
-        """Complete the order and generate a receipt."""
         if not self.tree.get_children():
             messagebox.showwarning("Empty Cart", "No items in the cart to complete the order.")
             return
@@ -317,20 +315,20 @@ class Dashboard(tk.Tk):
 
         
     def create_receipt(self):
-        """Create a frame to display the receipt."""
         tk.Label(self.receipt_frame, text="Receipt", font=("Arial", 16), bg="white").pack(pady=10)
-        self.receipt_text = tk.Text(self.receipt_frame, height=20, width=35, bg="lightgrey")  # Increased height
+        self.receipt_text = tk.Text(self.receipt_frame, height=20, width=35, bg="lightgrey")  
         self.receipt_text.pack(padx=5, pady=5, fill="both", expand=True)
 
+# Receipt
     def generate_receipt(self, order_id, total_price):
-        """Generate and display receipt."""
         receipt_content = f"Good House Burger\nErmita, Balayan, Batangas\n\n"
         receipt_content += f"ORDER ID: {order_id}\nDate: {datetime.now().strftime('%Y-%m-%d %I:%M:%S %p')}\n"
         receipt_content += "-----------------------------------\n"
         receipt_content += "QTY   ITEM                   AMOUNT\n"
         receipt_content += "-----------------------------------\n"
         MAX_NAME_LENGTH = 20  
-
+        
+# Format long strings
         for child in self.tree.get_children():
             qty, name, amount = self.tree.item(child, "values")
 
