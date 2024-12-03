@@ -8,6 +8,7 @@ The project is a Point of Sale (POS) system designed to streamline the order man
 II. Explanation of how Python concepts, libraries, etc. were applied
 
 Libraries:
+
 tkinter: This library is used to design the GUI for the POS system. It provides widgets like buttons, labels, spinboxes, and Treeview for managing orders, categories, and history.
 
 datetime: Used to generate timestamps for receipts and to display the date and time of orders.
