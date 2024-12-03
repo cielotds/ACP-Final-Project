@@ -16,12 +16,12 @@ class UserDao:
             result_set = DbOperations.get_data(query)
             
             if result_set: 
-                user_data = result_set[0]  # Get the first row of results
-                user = User()  # Create a new User instance
-                user.id = user_data[0]  # Assuming the first column is id
-                user.name = user_data[1]  # Assuming the second column is name
-                user.email = user_data[2]  # Assuming the third column is email
-                user.password = user_data[3]  # Assuming the fourth column is password
+                user_data = result_set[0]  
+                user = User()  
+                user.id = user_data[0]  
+                user.name = user_data[1]  
+                user.email = user_data[2]  
+                user.password = user_data[3]  
                 
         except Exception as e:
             messagebox.showerror("Error", str(e))
