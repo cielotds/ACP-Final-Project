@@ -1,4 +1,3 @@
-import hashlib
 from ConnectionProvider import get_con
 
 class DbOperations:
