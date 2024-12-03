@@ -91,7 +91,7 @@ class History(tk.Tk):
         order_id = self.order_id_entry.get()
         status = self.status_dropdown.get()
 
-    # Debugging output
+    
         print(f"Updating order status for Order ID: {order_id}, New Status: {status}")
 
         if not order_id.strip():
