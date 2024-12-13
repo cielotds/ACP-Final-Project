@@ -29,7 +29,7 @@ Object-Oriented Programming is widely used in the project. The project uses clas
 Error Handling:
 Exception Handling using try, except, and finally is employed to handle database errors and ensure the application remains stable even when an error occurs (e.g., database connectivity issues or invalid user input).
 
-```http
+```bash
   try:
         connection = mysql.connector.connect(
             host='localhost',
@@ -44,23 +44,20 @@ Exception Handling using try, except, and finally is employed to handle database
         return None
 ```
 
-String Manipulation:
-String formatting is used extensively, such as when generating receipts, formatting the total price, and displaying order details (e.g., f"TOTAL: P {total_price:.2f}\n”).
+String Manipulation: String formatting is used extensively, such as when generating receipts, formatting the total price, and displaying order details (e.g., f"TOTAL: P {total_price:.2f}\n”).
 
-Lambda Functions:
-Lambda expressions are used for short and anonymous functions. Here, the lambda function in this code is used to create an anonymous function to handle the KeyRelease event for email_entry and password_entry.
+Lambda Functions: Lambda expressions are used for short and anonymous functions. Here, the lambda function in this code is used to create an anonymous function to handle the KeyRelease event for email_entry and password_entry.
 
-```http
+```bash
   self.email_entry.bind("<KeyRelease>", lambda event: self.validate_fields())
         self.password_entry.bind("<KeyRelease>", lambda event: self.validate_fields())
 ```
 
-Additionally, it creates an anonymous function that, when triggered, calls self.show_products with the current category as the argument. (e.g., command=lambda c=category: self.show_products(c)). 
+Additionally, it creates an anonymous function that, when triggered, calls self.show_products with the current category as the argument. (e.g., command=lambda c=category: self.show_products(c)).
 
-List and Dictionary:
-Lists and dictionaries are used to store and manage menu items, orders, and configurations. For example, order items are stored in a dictionary that maps categories to lists of tuples containing its quantity, item and amount.
+List and Dictionary: Lists and dictionaries are used to store and manage menu items, orders, and configurations. For example, order items are stored in a dictionary that maps categories to lists of tuples containing its quantity, item and amount.
 
-```http
+```bash
    order_items = []
         for child in self.tree.get_children():
             values = self.tree.item(child, "values")
@@ -73,7 +70,7 @@ Lists and dictionaries are used to store and manage menu items, orders, and conf
 
 In addition, a dictionary (self.products) is used to group products by category, where each category (key) maps to a list of Product objects. The dictionary allows quick lookup of products by category, and the lists store the individual products within each category.
 
-```http
+```bash
    self.products = {
             "Rice Bowl": [
                 Product("Siomai Rice", 35.00, "images/siomai_rice (1).png"),
@@ -90,11 +87,13 @@ The chosen Sustainable Development Goal (SDG) is Goal 8: Decent Work and Economi
 IV. Instructions for running the program
 
 Clone the Repository:
+
 ```bash
   git clone <https://github.com/cielotds/ACP-Final-Project.git> cd
 ```
 
 Run the Application:
+
 ```bash
   python LogIn.py
 ```
