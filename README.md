@@ -84,12 +84,7 @@ The chosen Sustainable Development Goal (SDG) is Goal 8: Decent Work and Economi
 
 IV. Instructions for running the program
 
-• Access the Point of Sale System.
-• Sign Up or Log In. If you are a new user, click on the "Sign Up" button and fill in the required information (e.g., name, email and password). If you already have an account, enter your credentials and click "Log In".
-• You will see the dashboard, browse through your inventory and add items to the order by selecting quantities and clicking on an "Add" button.
-• Once all items are added, review the order summary displayed on the screen. You can also make any necessary adjustments (e.g., remove and reset items). Then, confirm the transaction by clicking on the "Complete Order" button.
-• After processing, the screen will display a receipt.
-• However, if you click on "View History", this button takes you to a page where you can view past orders.
-• Then you can click on any order from the list to view its details: order ID, date, price, and status(paid/not paid).
-• You can also update the order's status(from not paid to paid and vice versa) by clicking the “Update” button.
-• Click on "Close" when you are finished using the Point of Sale System, clicking this button will close the application safely.
+Run the Application:
+
+git clone <https://github.com/cielotds/ACP-Final-Project.git>
+cd <repository-ACP-Final-Project>
