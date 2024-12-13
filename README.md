@@ -89,7 +89,8 @@ IV. Instructions for running the program
 Clone the Repository:
 
 ```bash
-  git clone <https://github.com/cielotds/ACP-Final-Project.git> cd
+  git clone <https://github.com/cielotds/ACP-Final-Project.git>
+  cd <repository-ACP-Final-Project>
 ```
 
 Run the Application:
