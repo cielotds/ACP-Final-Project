@@ -238,44 +238,81 @@ class Dashboard(tk.Tk):
             messagebox.showwarning("Invalid Quantity", "Please enter a valid quantity.")
         
 
-    # Insert order data into the MySQL database.
     def insert_order_into_db(self, order_items, total_price):
         try:
-            # Get the database connection
-            con = get_con()  # Ensure this returns a valid connection object
+            con = get_con()
             if con is None:
                 messagebox.showerror("Database Error", "Unable to connect to the database.")
                 return None
 
             cursor = con.cursor()
 
-            # Prepare the SQL query
+        # Insert new order
             query = """
                 INSERT INTO orders (order_items, total_price, date, status)
                 VALUES (%s, %s, NOW(), %s)
             """
-            status = "not paid"
-
-            # Convert order_items to JSON (ensure column type in DB is JSON or TEXT)
+            status = "paid"
             order_items_json = json.dumps(order_items)
-
-            # Execute the query
             cursor.execute(query, (order_items_json, total_price, status))
-
-            # Commit the transaction
+            order_id = cursor.lastrowid
             con.commit()
 
-            # Retrieve the generated order ID
-            order_id = cursor.lastrowid
+        # Update sales from newly inserted and existing paid orders
+            self.update_all_paid_sales(con)
 
-            # Close the cursor and connection
             cursor.close()
             con.close()
-
             return order_id
         except Exception as e:
             messagebox.showerror("Database Error", f"An error occurred: {e}")
             return None
+
+    def update_all_paid_sales(self, con):
+        """ Update sales_quantity and sales_amount for all paid orders. """
+        try:
+            con = get_con()
+            if con is None:
+                messagebox.showerror("Database Error", "Database connection is not available.")
+                return
+
+            cursor = con.cursor(dictionary=True) 
+
+        # Get all "paid" orders from the database
+            cursor.execute("SELECT order_items FROM orders WHERE status = 'paid'")
+            paid_orders = cursor.fetchall()
+
+        # Initialize dictionary to aggregate product sales
+            product_sales = {}
+
+        # Process each paid order
+            for order in paid_orders:
+                order_items = json.loads(order["order_items"])
+                for item in order_items:
+                    product_name = item["item"]
+                    quantity = item["quantity"]
+                    amount = item["amount"]
+
+                    if product_name in product_sales:
+                        product_sales[product_name]["quantity"] += quantity
+                        product_sales[product_name]["amount"] += amount
+                    else:
+                        product_sales[product_name] = {"quantity": quantity, "amount": amount}
+
+        # Update products table with aggregated sales
+            for product, sales in product_sales.items():
+                update_query = """
+                    UPDATE products
+                    SET sales_quantity = %s,
+                        sales_amount = %s
+                    WHERE product_name = %s
+                """
+                cursor.execute(update_query, (sales["quantity"], sales["amount"], product))
+
+            con.commit()
+            cursor.close()
+        except Exception as e:
+            messagebox.showerror("Database Error", f"Failed to update product sales: {e}")
 
     def complete_order(self):
         if not self.tree.get_children():
