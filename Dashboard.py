@@ -238,6 +238,8 @@ class Dashboard(tk.Tk):
             messagebox.showwarning("Invalid Quantity", "Please enter a valid quantity.")
         
 
+
+
     def insert_order_into_db(self, order_items, total_price):
         try:
             con = get_con()
@@ -247,7 +249,7 @@ class Dashboard(tk.Tk):
 
             cursor = con.cursor()
 
-        # Insert new order
+            # Insert new order
             query = """
                 INSERT INTO orders (order_items, total_price, date, status)
                 VALUES (%s, %s, NOW(), %s)
@@ -258,7 +260,7 @@ class Dashboard(tk.Tk):
             order_id = cursor.lastrowid
             con.commit()
 
-        # Update sales from newly inserted and existing paid orders
+            # Update sales from newly inserted and existing paid orders
             self.update_all_paid_sales(con)
 
             cursor.close()
@@ -271,21 +273,16 @@ class Dashboard(tk.Tk):
     def update_all_paid_sales(self, con):
         """ Update sales_quantity and sales_amount for all paid orders. """
         try:
-            con = get_con()
-            if con is None:
-                messagebox.showerror("Database Error", "Database connection is not available.")
-                return
-
             cursor = con.cursor(dictionary=True) 
 
-        # Get all "paid" orders from the database
+            # Get all "paid" orders from the database
             cursor.execute("SELECT order_items FROM orders WHERE status = 'paid'")
             paid_orders = cursor.fetchall()
 
-        # Initialize dictionary to aggregate product sales
+            # Initialize dictionary to aggregate product sales
             product_sales = {}
 
-        # Process each paid order
+            # Process each paid order
             for order in paid_orders:
                 order_items = json.loads(order["order_items"])
                 for item in order_items:
@@ -299,12 +296,12 @@ class Dashboard(tk.Tk):
                     else:
                         product_sales[product_name] = {"quantity": quantity, "amount": amount}
 
-        # Update products table with aggregated sales
+            # Update products table with aggregated sales
             for product, sales in product_sales.items():
                 update_query = """
                     UPDATE products
-                    SET sales_quantity = %s,
-                        sales_amount = %s
+                    SET sales_quantity = sales_quantity + %s,
+                        sales_amount = sales_amount + %s
                     WHERE product_name = %s
                 """
                 cursor.execute(update_query, (sales["quantity"], sales["amount"], product))
@@ -313,6 +310,39 @@ class Dashboard(tk.Tk):
             cursor.close()
         except Exception as e:
             messagebox.showerror("Database Error", f"Failed to update product sales: {e}")
+
+    def insert_sales_data(self, order_items):
+        """ Insert sales data into the sales table for each product sold. """
+        try:
+            con = get_con()
+            if con is None:
+                messagebox.showerror("Database Error", "Unable to connect to the database.")
+                return
+
+            cursor = con.cursor(dictionary=True)  # Ensure cursor is set to dictionary mode
+
+            for item in order_items:
+                product_name = item["item"]
+                quantity = item["quantity"]
+                amount = item["amount"]
+
+            # Get the product_id from the products table
+                cursor.execute("SELECT product_id FROM products WHERE product_name = %s", (product_name,))
+                product = cursor.fetchone()
+
+                if product:
+                    product_id = product['product_id']  # Access by key if cursor is in dictionary mode
+                # Insert into sales table
+                    sales_query = """
+                        INSERT INTO sales (product_id, sales_quantity, total_price, sale_date)
+                        VALUES (%s, %s, %s, NOW())
+                    """
+                    cursor.execute(sales_query, (product_id, quantity, amount))
+
+            con.commit()
+            cursor.close()
+        except Exception as e:
+            messagebox.showerror("Database Error", f"Failed to insert sales data: {e}")
 
     def complete_order(self):
         if not self.tree.get_children():
@@ -335,6 +365,8 @@ class Dashboard(tk.Tk):
         # Insert the order data into the MySQL database
         try:
             order_id = self.insert_order_into_db(order_items, total_price)
+            # Insert sales data into the sales table
+            self.insert_sales_data(order_items)
         except Exception as e:
             messagebox.showerror("Database Error", f"An error occurred while saving the order: {e}")
             return
